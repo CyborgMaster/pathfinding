@@ -32,11 +32,11 @@ end
 
 class Node
   attr_accessor :location, :distance, :guess
-  attr_reader :adjacent
+  attr_reader :neighbors
 
   def initialize(location)
     @location = location
-    @adjacent = []
+    @neighbors = []
   end
 
   def distance_to(other)
@@ -51,21 +51,27 @@ Point = Struct.new :x, :y do
 end
 
 class StarQueue
-  delegate :push, to: :@queue
+  delegate :pop, :empty?, to: :@queue
 
   def initialize
     @queue = PriorityQueue.new
     @set = Set.new
   end
+
+  def push(node)
+    @queue.push node, node.guess
+  end
 end
 
-def a_star(map, start, goal)
+def a_star(map)
   open_nodes = StarQueue.new
   closed_nodes = Set.new
 
-  open_nodes.push start
+  start = map.start
+  goal = map.goal
   start.distance = 0
   start.guess = start.distance_to goal
+  open_nodes.push start
 
   until open_nodes.empty?
     current = open_nodes.pop
@@ -107,13 +113,12 @@ Shoes.app width: 600, height: 600 do
     rect location.x * @xSize, location.y * @ySize, @xSize, @ySize
   end
 
-  #fill rgb(0, 0.6, 0.9, 0.1)
-  #stroke rgb(0, 0.6, 0.9)
-  #strokewidth 0.25
-
   map = Map.new
   @xSize = width / map.width
   @ySize = height / map.height
 
   draw_map(map)
+  path = a_star(map)
+
+  alert 'No Path!' if path.nil?
 end
