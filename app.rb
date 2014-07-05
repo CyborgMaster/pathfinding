@@ -10,6 +10,7 @@ class Map
   def initialize
     @map = Array.new(10) { Array.new 10 }
     createNodes
+    hookUpNeighbors
     @start = @map[0][9]
     @goal = @map[9][0]
   end
@@ -27,16 +28,31 @@ class Map
       @map[x][y] = Node.new(Point.new x, y)
     end
   end
+
+  def hookUpNeighbors
+    @map.each do |col|
+      col.each do |node|
+        loc = node.location
+        ((loc.x - 1)..(loc.x + 1)).to_a.product(
+          ((loc.y - 1)..(loc.y + 1)).to_a) do |x, y|
+
+          next if x < 0 || y < 0 || x >= width || y >= height
+          node.neighbors << @map[x][y]
+        end
+      end
+    end
+  end
 end
 
 
 class Node
-  attr_accessor :location, :distance, :guess
+  attr_accessor :location, :distance, :guess, :from
   attr_reader :neighbors
 
   def initialize(location)
     @location = location
     @neighbors = []
+    @guess = Float::INFINITY
   end
 
   def distance_to(other)
@@ -51,7 +67,7 @@ Point = Struct.new :x, :y do
 end
 
 class StarQueue
-  delegate :pop, :empty?, to: :@queue
+  delegate :include?, :empty?, to: :@set
 
   def initialize
     @queue = PriorityQueue.new
@@ -60,6 +76,13 @@ class StarQueue
 
   def push(node)
     @queue.push node, node.guess
+    @set.add node
+  end
+
+  def pop
+    node = @queue.pop
+    @set.delete node
+    node
   end
 end
 
@@ -78,13 +101,13 @@ def a_star(map)
     return goal if current == goal
     closed_nodes.add current
     current.neighbors.each do |neighbor|
-      next if closed_set.include? neighbor
+      next if closed_nodes.include? neighbor
       guess = neighbor.distance_to goal
-      open_nodes.push neighbor, guess unless open_nodes.include? neighbor
       if guess < neighbor.guess
         neighbor.guess = guess
         neighbor.from = current
       end
+      open_nodes.push neighbor unless open_nodes.include? neighbor
     end
   end
 
@@ -121,4 +144,6 @@ Shoes.app width: 600, height: 600 do
   path = a_star(map)
 
   alert 'No Path!' if path.nil?
+
+  puts path
 end
