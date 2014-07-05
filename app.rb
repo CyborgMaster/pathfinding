@@ -8,8 +8,8 @@ class Map
   def initialize
     @map = Array.new(10) { Array.new 10 }
     createNodes
-    @start = @map[0][0]
-    @goal = @map[9][9]
+    @start = @map[0][9]
+    @goal = @map[9][0]
   end
 
   def width
