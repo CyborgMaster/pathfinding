@@ -86,7 +86,7 @@ class StarQueue
   end
 end
 
-def a_star(map)
+def a_star(map, visited_callback)
   open_nodes = StarQueue.new
   closed_nodes = Set.new
 
@@ -98,6 +98,7 @@ def a_star(map)
 
   until open_nodes.empty?
     current = open_nodes.pop
+    visited_callback.call current
     return goal if current == goal
     closed_nodes.add current
     current.neighbors.each do |neighbor|
@@ -141,7 +142,7 @@ Shoes.app width: 600, height: 600 do
   @ySize = height / map.height
 
   draw_map(map)
-  path = a_star(map)
+  path = a_star map, ->(visited) { draw_location visited.location, red }
 
   alert 'No Path!' if path.nil?
 
