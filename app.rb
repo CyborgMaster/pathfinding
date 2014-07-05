@@ -1,5 +1,7 @@
 require 'green_shoes'
 require 'active_support/all'
+require 'algorithms'
+include Containers
 
 class Map
   attr_accessor :start, :goal
@@ -29,7 +31,7 @@ end
 
 
 class Node
-  attr_accessor :location
+  attr_accessor :location, :distance, :guess
   attr_reader :adjacent
 
   def initialize(location)
@@ -48,10 +50,40 @@ Point = Struct.new :x, :y do
   end
 end
 
+class StarQueue
+  delegate :push, to: :@queue
+
+  def initialize
+    @queue = PriorityQueue.new
+    @set = Set.new
+  end
+end
 
 def a_star(map, start, goal)
+  open_nodes = StarQueue.new
+  closed_nodes = Set.new
 
+  open_nodes.push start
+  start.distance = 0
+  start.guess = start.distance_to goal
 
+  until open_nodes.empty?
+    current = open_nodes.pop
+    return goal if current == goal
+    closed_nodes.add current
+    current.neighbors.each do |neighbor|
+      next if closed_set.include? neighbor
+      guess = neighbor.distance_to goal
+      open_nodes.push neighbor, guess unless open_nodes.include? neighbor
+      if guess < neighbor.guess
+        neighbor.guess = guess
+        neighbor.from = current
+      end
+    end
+  end
+
+  # No path to goal
+  return nil
 end
 
 
