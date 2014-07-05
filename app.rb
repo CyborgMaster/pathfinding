@@ -9,7 +9,7 @@ class Map
     @map = Array.new(10) { Array.new 10 }
     createNodes
     @start = @map[0][0]
-    @end = @map[9][9]
+    @goal = @map[9][9]
   end
 
   def width
@@ -30,9 +30,11 @@ end
 
 class Node
   attr_accessor :location
+  attr_reader :adjacent
 
   def initialize(location)
     @location = location
+    @adjacent = []
   end
 
   def distance_to(other)
@@ -52,25 +54,34 @@ def a_star(map, start, goal)
 
 end
 
-def draw_map(map)
-  xSize = app.width / map.width
-  ySize = app.height / map.height
-
-  # Draw grid
-  (0...map.height).each do |y|
-    line 0, y * ySize, app.width, y * ySize
-  end
-  (0...map.width).each do |x|
-    line x * xSize, 0, x * xSize , app.height
-  end
-end
 
 Shoes.app width: 600, height: 600 do
+  def draw_map(map)
+    # Draw grid
+    (0...map.height).each do |y|
+      line 0, y * @ySize, width, y * @ySize
+    end
+    (0...map.width).each do |x|
+      line x * @xSize, 0, x * @xSize, height
+    end
+
+    # Draw start and end
+    draw_location(map.start.location, blue)
+    draw_location(map.goal.location, green)
+  end
+
+  def draw_location(location, color)
+    fill color
+    rect location.x * @xSize, location.y * @ySize, @xSize, @ySize
+  end
+
   #fill rgb(0, 0.6, 0.9, 0.1)
   #stroke rgb(0, 0.6, 0.9)
   #strokewidth 0.25
 
   map = Map.new
+  @xSize = width / map.width
+  @ySize = height / map.height
 
   draw_map(map)
 end
