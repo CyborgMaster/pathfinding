@@ -11,7 +11,6 @@ class Map
     options = { size: 10, start: [0, 9], goal: [9, 0] }.merge options
 
     @map = Array.new(options[:size]) { Array.new options[:size] }
-    puts @map
     createNodes
     hookUpNeighbors
     @start = @map[options[:start][0]][options[:start][1]]
@@ -140,9 +139,10 @@ maps[:simple] = Map.new do |map|
     map[7][x].obstacle = true
   end
 end
+maps[:empty_large] = Map.new size: 100
 
 
-Shoes.app width: 600, height: 600 do
+Shoes.app width: 1000, height: 1000 do
   def draw_map(map)
     # Draw grid
     (0...map.height).each do |y|
@@ -167,7 +167,8 @@ Shoes.app width: 600, height: 600 do
 
   def draw_path(node)
     stroke yellow
-    strokewidth 10
+    cap :curve
+    strokewidth @xSize / 3
     from = node
     loop do
       node = from
