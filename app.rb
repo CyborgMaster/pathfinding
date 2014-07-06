@@ -15,17 +15,14 @@ class Gui
     @panel = DrawingPanel.new width, height, 'Pathfinding Example'
     @graphics = @panel.graphics
 
-    # graphics.setColor(java.awt.Color.cyan)
-    # graphics.drawLine(0,0,100,100)
-
-    map = Maps::MAPS[:from_behind_double_small_entry]
+    map = Maps::MAPS[:simple]
     @xSize = width / map.width
     @ySize = height / map.height
 
     draw_map(map)
 
     sleep_time = 10.0 / (map.width * map.height)
-    sleep_time = 0
+    #sleep_time = 0
     visited_callback = lambda do |visited|
       sleep sleep_time
       return if visited == map.start || visited == map.goal
