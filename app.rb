@@ -7,12 +7,15 @@ class Map
   attr_accessor :start, :goal
   delegate :[], :[]=, to: :@map
 
-  def initialize
-    @map = Array.new(10) { Array.new 10 }
+  def initialize(options = {})
+    options = { size: 10, start: [0, 9], goal: [9, 0] }.merge options
+
+    @map = Array.new(options[:size]) { Array.new options[:size] }
+    puts @map
     createNodes
     hookUpNeighbors
-    @start = @map[0][9]
-    @goal = @map[9][0]
+    @start = @map[options[:start][0]][options[:start][1]]
+    @goal = @map[options[:goal][0]][options[:goal][1]]
 
     yield self if block_given?
   end
@@ -50,13 +53,6 @@ class Map
           node.neighbors << @map[x][y]
         end
       end
-    end
-  end
-
-  def add_obstacles
-    (2..6).each do |x|
-      @map[x][2].obstacle = true
-      @map[7][x].obstacle = true
     end
   end
 end
