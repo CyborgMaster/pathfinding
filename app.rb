@@ -70,7 +70,7 @@ class StarQueue
   delegate :include?, :empty?, to: :@set
 
   def initialize
-    @queue = PriorityQueue.new
+    @queue = PriorityQueue.new { |x, y| (x <=> y) == -1 } # Min queue
     @set = Set.new
   end
 
@@ -138,12 +138,15 @@ Shoes.app width: 600, height: 600 do
   end
 
   def draw_path(node)
-    stroke blue
+    stroke yellow
+    strokewidth 10
+    from = node
     loop do
+      node = from
       from = node.from
-      puts node.location, from.location
       break if from.nil?
-      line node.location.x, node.location.y, from.location.x, from.location.y
+      line (node.location.x + 0.5) * @xSize, (node.location.y + 0.5) * @ySize,
+        (from.location.x + 0.5) * @xSize, (from.location.y + 0.5) * @ySize
     end
   end
 
@@ -155,12 +158,13 @@ Shoes.app width: 600, height: 600 do
 
   visited_callback = lambda do |visited|
     sleep 0.1
+    return if visited == map.start || visited == map.goal
     draw_location visited.location, red
   end
 
   Thread.new do
     path = a_star map, visited_callback
     alert 'No Path!' if path.nil?
-    # draw_path path
+    draw_path path
   end
 end
