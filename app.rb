@@ -13,6 +13,8 @@ class Map
     hookUpNeighbors
     @start = @map[0][9]
     @goal = @map[9][0]
+
+    add_obstacles
   end
 
   def width
@@ -21,6 +23,14 @@ class Map
 
   def height
     @map[0].size
+  end
+
+  def each_node
+    @map.each do |col|
+      col.each do |node|
+        yield node
+      end
+    end
   end
 
   def createNodes
@@ -42,11 +52,18 @@ class Map
       end
     end
   end
+
+  def add_obstacles
+    (2..6).each do |x|
+      @map[x][2].obstacle = true
+      @map[7][x].obstacle = true
+    end
+  end
 end
 
 
 class Node
-  attr_accessor :location, :distance, :guess, :from
+  attr_accessor :location, :distance, :guess, :from, :obstacle
   attr_reader :neighbors
 
   def initialize(location)
@@ -102,6 +119,7 @@ def a_star(map, visited_callback)
     return goal if current == goal
     closed_nodes.add current
     current.neighbors.each do |neighbor|
+      next if neighbor.obstacle
       next if closed_nodes.include? neighbor
       guess = neighbor.distance_to goal
       if guess < neighbor.guess
@@ -127,14 +145,17 @@ Shoes.app width: 600, height: 600 do
       line x * @xSize, 0, x * @xSize, height
     end
 
+    # Draw obstacles
+    map.each_node { |node| draw_node node, black if node.obstacle }
+
     # Draw start and end
-    draw_location(map.start.location, blue)
-    draw_location(map.goal.location, green)
+    draw_node map.start, blue
+    draw_node map.goal, green
   end
 
-  def draw_location(location, color)
+  def draw_node(node, color)
     fill color
-    rect location.x * @xSize, location.y * @ySize, @xSize, @ySize
+    rect node.location.x * @xSize, node.location.y * @ySize, @xSize, @ySize
   end
 
   def draw_path(node)
@@ -159,7 +180,7 @@ Shoes.app width: 600, height: 600 do
   visited_callback = lambda do |visited|
     sleep 0.1
     return if visited == map.start || visited == map.goal
-    draw_location visited.location, red
+    draw_node visited, red
   end
 
   Thread.new do
