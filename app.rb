@@ -8,7 +8,9 @@ class Map
   delegate :[], :[]=, to: :@map
 
   def initialize(options = {})
-    options = { size: 10, start: [0, 9], goal: [9, 0] }.merge options
+    options = { size: 10 }.merge options
+    options = { start: [0, options[:size] - 1],
+      goal: [options[:size] - 1, 0] }.merge options
 
     @map = Array.new(options[:size]) { Array.new options[:size] }
     createNodes
@@ -140,6 +142,11 @@ maps[:simple] = Map.new do |map|
   end
 end
 maps[:empty_large] = Map.new size: 100
+maps[:simple_large] = Map.new size: 100 do |map|
+  (20..60).each do |x|
+    map[70][x].obstacle = true
+  end
+end
 
 
 Shoes.app width: 1000, height: 1000 do
@@ -185,8 +192,9 @@ Shoes.app width: 1000, height: 1000 do
 
   draw_map(map)
 
+  sleep_time = 10.0 / (map.width * map.height)
   visited_callback = lambda do |visited|
-    sleep 0.1
+    sleep sleep_time
     return if visited == map.start || visited == map.goal
     draw_node visited, red
   end
