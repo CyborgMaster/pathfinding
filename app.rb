@@ -142,9 +142,15 @@ Shoes.app width: 600, height: 600 do
   @ySize = height / map.height
 
   draw_map(map)
-  path = a_star map, ->(visited) { draw_location visited.location, red }
 
-  alert 'No Path!' if path.nil?
+  visited_callback = lambda do |visited|
+    draw_location visited.location, red
+    sleep 0.5
+  end
 
-  puts path
+  Thread.new do
+    path = a_star map, visited_callback
+    alert 'No Path!' if path.nil?
+    puts path
+  end
 end
