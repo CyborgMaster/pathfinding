@@ -9,7 +9,6 @@ module Maps
 
       @map = Array.new(options[:size]) { Array.new options[:size] }
       createNodes
-      hookUpNeighbors
       @start = @map[options[:start][0]][options[:start][1]]
       @goal = @map[options[:goal][0]][options[:goal][1]]
 
@@ -36,9 +35,8 @@ module Maps
       (0...width).to_a.product (0...height).to_a do |x ,y|
         @map[x][y] = Node.new(Point.new x, y)
       end
-    end
 
-    def hookUpNeighbors
+      # Hook up neighbors
       @map.each do |col|
         col.each do |node|
           loc = node.location
