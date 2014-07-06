@@ -2,6 +2,7 @@ require 'java'
 require 'active_support/all'
 
 java_import java.awt.Color
+java_import java.awt.BasicStroke
 
 require_relative 'drawing_panel'
 require_relative 'maps'
@@ -24,17 +25,15 @@ class Gui
     draw_map(map)
 
     sleep_time = 10.0 / (map.width * map.height)
-    # sleep_time = 0
+    sleep_time = 0
     visited_callback = lambda do |visited|
       sleep sleep_time
       return if visited == map.start || visited == map.goal
       draw_node visited, Color::RED
     end
 
-    # Thread.new do
     path = AStar::search map, visited_callback
     draw_path path unless path.nil?
-    # end
   end
 
   def draw_map(map)
@@ -46,7 +45,7 @@ class Gui
     #   line x * @xSize, 0, x * @xSize, height
     # end
 
-    # Draw obstacles
+    # Draw nodes
     map.each_node do |node|
       if node.obstacle
         draw_node node, Color::BLACK
@@ -69,8 +68,7 @@ class Gui
 
   def draw_path(node)
     @graphics.setColor Color::YELLOW
-    #cap :curve
-    #strokewidth xSize / 3
+    @graphics.setStroke BasicStroke.new @xSize / 3
     from = node
     loop do
       node = from
