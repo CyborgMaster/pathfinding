@@ -9,8 +9,8 @@ module Maps
 
       @map = Array.new(options[:size]) { Array.new options[:size] }
       createNodes
-      @start = @map[options[:start][0]][options[:start][1]]
-      @goal = @map[options[:goal][0]][options[:goal][1]]
+      @start = set_start options[:start][0], options[:start][1]
+      @goal = set_goal options[:goal][0], options[:goal][1]
 
       yield self if block_given?
     end
@@ -52,6 +52,14 @@ module Maps
 
     def add_obstacle(x, y)
       @map[x][y].obstacle = true
+    end
+
+    def set_start(x, y)
+      @map[x][y]
+    end
+
+    def set_goal(x, y)
+      @map[x][y]
     end
   end
 
