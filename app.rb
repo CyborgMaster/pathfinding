@@ -153,6 +153,13 @@ maps[:blocked] = Map.new size: 100 do |map|
     map[70][x].obstacle = true
   end
 end
+maps[:from_behind] = Map.new size: 100, start: [10, 50], goal: [50, 50] do |map|
+  (30..70).each do |x|
+    map[x][30].obstacle = true
+    map[x][70].obstacle = true
+    map[30][x].obstacle = true
+  end
+end
 
 
 Shoes.app width: 1000, height: 1000 do
@@ -192,7 +199,7 @@ Shoes.app width: 1000, height: 1000 do
     end
   end
 
-  map = maps[:blocked]
+  map = maps[:from_behind]
   @xSize = width / map.width
   @ySize = height / map.height
 
