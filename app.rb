@@ -14,7 +14,7 @@ class Map
     @start = @map[0][9]
     @goal = @map[9][0]
 
-    add_obstacles
+    yield self if block_given?
   end
 
   def width
@@ -136,6 +136,15 @@ def a_star(map, visited_callback)
   return nil
 end
 
+maps = {}
+maps[:empty] = Map.new
+maps[:simple] = Map.new do |map|
+  (2..6).each do |x|
+    map[x][2].obstacle = true
+    map[7][x].obstacle = true
+  end
+end
+
 
 Shoes.app width: 600, height: 600 do
   def draw_map(map)
@@ -173,7 +182,7 @@ Shoes.app width: 600, height: 600 do
     end
   end
 
-  map = Map.new
+  map = maps[:simple]
   @xSize = width / map.width
   @ySize = height / map.height
 
