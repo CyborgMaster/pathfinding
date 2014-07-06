@@ -1,7 +1,6 @@
 module Maps
   class Map
     attr_accessor :start, :goal
-    delegate :[], :[]=, to: :@map
 
     def initialize(options = {})
       options = { size: 10 }.merge options
@@ -51,6 +50,10 @@ module Maps
           end
         end
       end
+    end
+
+    def add_obstacle(x, y)
+      @map[x][y].obstacle = true
     end
   end
 
