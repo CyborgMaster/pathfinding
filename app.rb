@@ -65,7 +65,8 @@ class Gui
 
   def draw_path(node)
     @graphics.setColor Color::YELLOW
-    @graphics.setStroke BasicStroke.new @xSize / 3
+    @graphics.setStroke BasicStroke.new @xSize / 3, BasicStroke::CAP_ROUND,
+      BasicStroke::JOIN_ROUND
     from = node
     loop do
       node = from
