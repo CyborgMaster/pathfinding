@@ -55,8 +55,11 @@ module Maps
   end
 
   class Node
-    attr_accessor :location, :obstacle, :distance, :guess, :from
+    attr_accessor :location, :obstacle
     attr_reader :neighbors
+
+    # Used in AStar
+    attr_accessor :distance, :guess, :from
 
     def initialize(location)
       @location = location
