@@ -8,16 +8,22 @@ Thread::abort_on_exception = true
 
 Shoes.app width: 1000, height: 1000 do
   def draw_map(map)
-    # Draw grid
-    (0...map.height).each do |y|
-      line 0, y * @ySize, width, y * @ySize
-    end
-    (0...map.width).each do |x|
-      line x * @xSize, 0, x * @xSize, height
-    end
+    # # Draw grid
+    # (0...map.height).each do |y|
+    #   line 0, y * @ySize, width, y * @ySize
+    # end
+    # (0...map.width).each do |x|
+    #   line x * @xSize, 0, x * @xSize, height
+    # end
 
     # Draw obstacles
-    map.each_node { |node| draw_node node, black if node.obstacle }
+    map.each_node do |node|
+      if node.obstacle
+        draw_node node, black
+      else
+        draw_node node, white
+      end
+    end
 
     # Draw start and end
     draw_node map.start, blue
