@@ -8,35 +8,20 @@ GEM
       thread_safe (~> 0.1)
       tzinfo (~> 1.1)
     algorithms (0.6.1)
-    atk (2.2.0)
-      glib2 (= 2.2.0)
-    cairo (1.12.9)
-      pkg-config (>= 1.1.5)
-    gdk_pixbuf2 (2.2.0)
-      glib2 (= 2.2.0)
-    glib2 (2.2.0)
-      pkg-config
-    green_shoes (1.1.374)
-      gtk2
-    gtk2 (2.2.0)
-      atk (= 2.2.0)
-      gdk_pixbuf2 (= 2.2.0)
-      pango (= 2.2.0)
+    algorithms (0.6.1-java)
     i18n (0.6.9)
     json (1.8.1)
+    json (1.8.1-java)
     minitest (5.3.5)
-    pango (2.2.0)
-      cairo (>= 1.12.5)
-      glib2 (= 2.2.0)
-    pkg-config (1.1.5)
     thread_safe (0.3.4)
+    thread_safe (0.3.4-java)
     tzinfo (1.2.1)
       thread_safe (~> 0.1)
 
 PLATFORMS
+  java
   ruby
 
 DEPENDENCIES
   activesupport
   algorithms
-  green_shoes
