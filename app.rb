@@ -137,6 +137,16 @@ Shoes.app width: 600, height: 600 do
     rect location.x * @xSize, location.y * @ySize, @xSize, @ySize
   end
 
+  def draw_path(node)
+    stroke blue
+    loop do
+      from = node.from
+      puts node.location, from.location
+      break if from.nil?
+      line node.location.x, node.location.y, from.location.x, from.location.y
+    end
+  end
+
   map = Map.new
   @xSize = width / map.width
   @ySize = height / map.height
@@ -144,13 +154,13 @@ Shoes.app width: 600, height: 600 do
   draw_map(map)
 
   visited_callback = lambda do |visited|
+    sleep 0.1
     draw_location visited.location, red
-    sleep 0.5
   end
 
   Thread.new do
     path = a_star map, visited_callback
     alert 'No Path!' if path.nil?
-    puts path
+    # draw_path path
   end
 end
