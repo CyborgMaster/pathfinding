@@ -147,6 +147,12 @@ maps[:simple_large] = Map.new size: 100 do |map|
     map[70][x].obstacle = true
   end
 end
+maps[:blocked] = Map.new size: 100 do |map|
+  (20..70).each do |x|
+    map[x][20].obstacle = true
+    map[70][x].obstacle = true
+  end
+end
 
 
 Shoes.app width: 1000, height: 1000 do
@@ -186,7 +192,7 @@ Shoes.app width: 1000, height: 1000 do
     end
   end
 
-  map = maps[:simple]
+  map = maps[:blocked]
   @xSize = width / map.width
   @ySize = height / map.height
 
