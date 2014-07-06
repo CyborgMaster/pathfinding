@@ -1,7 +1,7 @@
 require 'green_shoes'
 require 'active_support/all'
 
-require_relative 'map'
+require_relative 'maps'
 require_relative 'a_star'
 
 Thread::abort_on_exception = true
