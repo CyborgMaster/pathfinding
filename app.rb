@@ -121,8 +121,10 @@ def a_star(map, visited_callback)
     current.neighbors.each do |neighbor|
       next if neighbor.obstacle
       next if closed_nodes.include? neighbor
-      guess = neighbor.distance_to goal
+      distance = current.distance + current.distance_to(neighbor)
+      guess = distance + neighbor.distance_to(goal)
       if guess < neighbor.guess
+        neighbor.distance = distance
         neighbor.guess = guess
         neighbor.from = current
       end
