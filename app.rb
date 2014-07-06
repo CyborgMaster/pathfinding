@@ -161,6 +161,19 @@ maps[:from_behind] = Map.new size: 100, start: [10, 50], goal: [50, 50] do |map|
   end
 end
 
+maps[:from_behind_double] = Map.new size: 100, start: [10, 50], goal: [50, 50] do |map|
+  (30..70).each do |x|
+    map[x][30].obstacle = true
+    map[x][70].obstacle = true
+    map[30][x].obstacle = true
+  end
+  (40..60).each do |x|
+    map[x][40].obstacle = true
+    map[x][60].obstacle = true
+    map[60][x].obstacle = true
+  end
+end
+
 
 Shoes.app width: 1000, height: 1000 do
   def draw_map(map)
@@ -199,13 +212,14 @@ Shoes.app width: 1000, height: 1000 do
     end
   end
 
-  map = maps[:from_behind]
+  map = maps[:from_behind_double]
   @xSize = width / map.width
   @ySize = height / map.height
 
   draw_map(map)
 
-  sleep_time = 10.0 / (map.width * map.height)
+  sleep_time = 1.0 / (map.width * map.height)
+  # sleep_time = 0
   visited_callback = lambda do |visited|
     sleep sleep_time
     return if visited == map.start || visited == map.goal
