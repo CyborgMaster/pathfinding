@@ -52,6 +52,12 @@ class Gui
     @graphics.setColor color
     @graphics.fillRect node.location.x * @xSize, node.location.y * @ySize,
       @xSize, @ySize
+
+    # Draw outline
+    @graphics.setColor Color::BLACK
+    @graphics.drawRect node.location.x * @xSize, node.location.y * @ySize,
+      @xSize, @ySize
+
     @panel.repaint
   end
 
