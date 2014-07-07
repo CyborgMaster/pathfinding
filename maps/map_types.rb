@@ -82,23 +82,28 @@ module Maps
   end
 
   class QuadNode < Node
-    attr_reader :parent, :left, :top, :right, :bottom
+    attr_reader :left, :top, :right, :bottom
     attr_reader :leaf, :nw, :ne, :sw, :se
 
     def initialize(left, top, right, bottom, parent = nil)
       @leaf = true
       @left, @top, @right, @bottom = left, top, right, bottom
-      @parent = parent
-      # puts "#{left}, #{top}, #{right}, #{bottom}"
-      # puts "size: #{size}"
     end
 
     def size
-      @size ||= (right - left + 1) * (bottom - top + 1)
+      @size ||= width * height
     end
 
     def center
       @center ||= Point.new (right + left) / 2, (bottom + top) / 2
+    end
+
+    def width
+      @width ||= right - left + 1
+    end
+
+    def height
+      @height ||= bottom - top + 1
     end
 
     def contains?(point)
@@ -116,14 +121,17 @@ module Maps
     def add_item(point)
       return self if size == 1
 
-      # Divide into 4 children
-      @leaf = false
-      mid = center
-      @nw = QuadNode.new left, top, mid.x, mid.y, self
-      @ne = QuadNode.new mid.x + 1, top, right, mid.y, self
-      @sw = QuadNode.new left, mid.y + 1, mid.x, bottom, self
-      @se = QuadNode.new mid.x + 1, mid.y + 1, right, bottom, self
+      if leaf
+        # Divide into 4 children
+        @leaf = false
+        mid = center
+        @nw = QuadNode.new left, top, mid.x, mid.y
+        @ne = QuadNode.new mid.x + 1, top, right, mid.y
+        @sw = QuadNode.new left, mid.y + 1, mid.x, bottom
+        @se = QuadNode.new mid.x + 1, mid.y + 1, right, bottom
+      end
 
+      # pass along call to children
       each_node do |child|
         return child.add_item point if child.contains? point
       end

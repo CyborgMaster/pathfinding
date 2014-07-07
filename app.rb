@@ -34,6 +34,8 @@ class Gui
   end
 
   def draw_map(map)
+    puts 'Drawing map------------------'
+
     # Draw nodes
     map.each_node do |node|
       if node.obstacle
@@ -49,14 +51,15 @@ class Gui
   end
 
   def draw_node(node, color)
+    draw_args = node.left * @xSize, node.top * @ySize,
+      node.width * @xSize, node.height * @ySize
+
     @graphics.setColor color
-    @graphics.fillRect node.center.x * @xSize, node.center.y * @ySize,
-      @xSize, @ySize
+    @graphics.fillRect(*draw_args)
 
     # Draw outline
     @graphics.setColor Color::BLACK
-    @graphics.drawRect node.center.x * @xSize, node.center.y * @ySize,
-      @xSize, @ySize
+    @graphics.drawRect(*draw_args)
 
     @panel.repaint
   end
