@@ -21,8 +21,7 @@ class Gui
 
     draw_map(map)
 
-    sleep_time = 100.0 / (map.width * map.height)
-    #sleep_time = 0
+    sleep_time = 0.05
     visited_callback = lambda do |visited|
       sleep sleep_time
       return if visited == map.start || visited == map.goal
