@@ -15,20 +15,10 @@ java_import javax.swing.ImageIcon
 java_import java.awt.Dimension
 
 class DrawingPanel
-  attr_reader :graphics
-
-  delegate :repaint, to: :@panel
+  delegate :repaint, :graphics, to: :@panel
 
   def initialize(width, height, title = '')
-    image = BufferedImage.new width, height, BufferedImage::TYPE_INT_ARGB;
-
-    @panel = JPanel.new;
-    @panel.setBackground Color::WHITE
-    @panel.setPreferredSize Dimension.new(width, height)
-    @panel.add JLabel.new ImageIcon.new image
-
-    @graphics = image.getGraphics
-    @graphics.setColor Color::BLACK
+    @panel = BufferedPanel.new width, height
 
     frame = JFrame.new title
     frame.setResizable false
@@ -36,23 +26,22 @@ class DrawingPanel
     frame.pack
     frame.setVisible true
   end
+end
 
-  # repaint timer so that the screen will update
-  #  new Timer(DELAY, this).start();
+class BufferedPanel < JPanel
+  attr_reader :graphics
 
-  # // used for an internal timer that keeps repainting
-  # public void actionPerformed(ActionEvent e) {
-  #     this.panel.repaint();
-  # }
+  def initialize(width, height)
+    super()
+    setBackground Color::WHITE
+    setPreferredSize Dimension.new(width, height)
 
-  # // set the background color of the drawing panel
-  # public void setBackground(Color c) {
-  #     this.panel.setBackground(c);
-  # }
+    @image = BufferedImage.new width, height, BufferedImage::TYPE_INT_ARGB;
+    @graphics = @image.getGraphics
+  end
 
-  # // show or hide the drawing panel on the screen
-  # public void setVisible(boolean visible) {
-  #     this.frame.setVisible(visible);
-  # }
-
+  def paintComponent(graphics)
+    super
+    graphics.drawImage @image, 0, 0, nil
+  end
 end
