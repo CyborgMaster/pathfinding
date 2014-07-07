@@ -34,14 +34,6 @@ class Gui
   end
 
   def draw_map(map)
-    # # Draw grid
-    # (0...map.height).each do |y|
-    #   line 0, y * @ySize, width, y * @ySize
-    # end
-    # (0...map.width).each do |x|
-    #   line x * @xSize, 0, x * @xSize, height
-    # end
-
     # Draw nodes
     map.each_node do |node|
       if node.obstacle
