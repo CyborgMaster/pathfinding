@@ -21,16 +21,16 @@ class Gui
 
     draw_map(map)
 
-    sleep_time = 10.0 / (map.width * map.height)
-    sleep_time = 0
+    sleep_time = 100.0 / (map.width * map.height)
+    #sleep_time = 0
     visited_callback = lambda do |visited|
       sleep sleep_time
       return if visited == map.start || visited == map.goal
       draw_node visited, Color::RED
     end
 
-    # path = AStar::search map, visited_callback
-    # draw_path path unless path.nil?
+    path = AStar::search map, visited_callback
+    draw_path path unless path.nil?
   end
 
   def draw_map(map)
@@ -71,8 +71,10 @@ class Gui
       node = from
       from = node.from
       break if from.nil?
-      @graphics.drawLine (node.center.x + 0.5) * @xSize, (node.center.y + 0.5) * @ySize,
-        (from.center.x + 0.5) * @xSize, (from.center.y + 0.5) * @ySize
+      @graphics.drawLine (node.left + node.right + 1) / 2.0 * @xSize,
+        (node.top + node.bottom + 1) / 2.0 * @ySize,
+        (from.left + from.right + 1) / 2.0 * @xSize,
+        (from.top + from.bottom + 1) / 2.0 * @ySize
     end
 
     @panel.repaint
