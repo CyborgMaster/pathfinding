@@ -15,7 +15,7 @@ class Gui
     @panel = DrawingPanel.new width, height, 'Pathfinding Example'
     @graphics = @panel.graphics
 
-    map = Maps::MAPS[:quad_empty]
+    map = Maps::MAPS[:from_behind_double_small_entry]
     @xSize = width / map.width
     @ySize = height / map.height
 
@@ -34,8 +34,6 @@ class Gui
   end
 
   def draw_map(map)
-    puts 'Drawing map------------------'
-
     # Draw nodes
     map.each_node do |node|
       if node.obstacle
