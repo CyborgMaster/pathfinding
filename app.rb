@@ -15,7 +15,7 @@ class Gui
     @panel = DrawingPanel.new width, height, 'Pathfinding Example'
     @graphics = @panel.graphics
 
-    map = Maps::MAPS[:from_behind_double]
+    map = Maps::MAPS[:quad_empty]
     @xSize = width / map.width
     @ySize = height / map.height
 
@@ -29,8 +29,8 @@ class Gui
       draw_node visited, Color::RED
     end
 
-    path = AStar::search map, visited_callback
-    draw_path path unless path.nil?
+    # path = AStar::search map, visited_callback
+    # draw_path path unless path.nil?
   end
 
   def draw_map(map)
@@ -50,12 +50,12 @@ class Gui
 
   def draw_node(node, color)
     @graphics.setColor color
-    @graphics.fillRect node.location.x * @xSize, node.location.y * @ySize,
+    @graphics.fillRect node.center.x * @xSize, node.center.y * @ySize,
       @xSize, @ySize
 
     # Draw outline
     @graphics.setColor Color::BLACK
-    @graphics.drawRect node.location.x * @xSize, node.location.y * @ySize,
+    @graphics.drawRect node.center.x * @xSize, node.center.y * @ySize,
       @xSize, @ySize
 
     @panel.repaint
@@ -70,8 +70,8 @@ class Gui
       node = from
       from = node.from
       break if from.nil?
-      @graphics.drawLine (node.location.x + 0.5) * @xSize, (node.location.y + 0.5) * @ySize,
-        (from.location.x + 0.5) * @xSize, (from.location.y + 0.5) * @ySize
+      @graphics.drawLine (node.center.x + 0.5) * @xSize, (node.center.y + 0.5) * @ySize,
+        (from.center.x + 0.5) * @xSize, (from.center.y + 0.5) * @ySize
     end
 
     @panel.repaint

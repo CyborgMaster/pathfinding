@@ -65,4 +65,6 @@ module Maps
       map.add_obstacle 40, x unless (48..52).include? x
     end
   end
+
+  MAPS[:quad_empty] = QuadMap.new size: 16
 end

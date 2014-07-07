@@ -33,7 +33,7 @@ module Maps
       # Hook up neighbors
       @map.each do |col|
         col.each do |node|
-          loc = node.location
+          loc = node.center
           ((loc.x - 1)..(loc.x + 1)).to_a.product(
             ((loc.y - 1)..(loc.y + 1)).to_a) do |x, y|
 
@@ -58,20 +58,20 @@ module Maps
   end
 
   class Node
-    attr_accessor :location, :obstacle
-    attr_reader :neighbors
+    attr_accessor :obstacle
+    attr_reader :center, :neighbors
 
     # Used in AStar
     attr_accessor :distance, :guess, :from
 
-    def initialize(location)
-      @location = location
+    def initialize(center)
+      @center = center
       @neighbors = []
       @guess = Float::INFINITY
     end
 
     def distance_to(other)
-      location.distance_to other.location
+      center.distance_to other.center
     end
   end
 
@@ -86,13 +86,15 @@ module Maps
     attr_reader :leaf, :nw, :ne, :sw, :se
 
     def initialize(left, top, right, bottom, parent = nil)
-      self.leaf = true
+      @leaf = true
       @left, @top, @right, @bottom = left, top, right, bottom
       @parent = parent
+      # puts "#{left}, #{top}, #{right}, #{bottom}"
+      # puts "size: #{size}"
     end
 
     def size
-      (right - left) * (bottom - top)
+      @size ||= (right - left + 1) * (bottom - top + 1)
     end
 
     def center
@@ -104,11 +106,11 @@ module Maps
     end
 
     def each_node(&blk)
-      blk.call self if leaf
-      nw.call blk
-      ne.call blk
-      sw.call blk
-      se.call blk
+      return blk.call self if leaf
+      nw.each_node(&blk)
+      ne.each_node(&blk)
+      sw.each_node(&blk)
+      se.each_node(&blk)
     end
 
     def add_item(point)
@@ -123,37 +125,37 @@ module Maps
       @se = QuadNode.new mid.x + 1, mid.y + 1, right, bottom, self
 
       each_node do |child|
-        return child.add_item point if child.conatins point
+        return child.add_item point if child.contains? point
       end
     end
   end
 
   class QuadMap < Map
     def initialize(options= {})
-      super
-
       size = options[:size]
-      fail "size must be power of 2" unless size & (size – 1) == 0
+      fail "size must be power of 2" unless Math.log2(size) % 1 == 0
+      super
     end
 
     def createNodes
       @root = QuadNode.new(0, 0, @width - 1, @height - 1)
     end
 
-    def add_item(x, y)
-      @root.add_item(x, y)
+    def each_node(&blk)
+      @root.each_node(&blk)
     end
 
     def add_obstacle(x, y)
-      @map[x][y].obstacle = true
+      node = @root.add_item(Point.new x, y)
+      node.obstacle = true
     end
 
     def set_start(x, y)
-      @map[x][y]
+      @root.add_item(Point.new x, y)
     end
 
     def set_goal(x, y)
-      @map[x][y]
+      @root.add_item(Point.new x, y)
     end
   end
 end
